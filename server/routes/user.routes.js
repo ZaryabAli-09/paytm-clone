@@ -27,8 +27,17 @@ router.post("/signup", async (req, res) => {
 
     savedUser.password = undefined;
 
+    // creating account for user and adding initial balance to it
+    const addInitialBalanceToAccount = new Account({
+      userId: savedUser._id,
+      balance: 1 + Math.random() * 10000,
+    });
+
+    await addInitialBalanceToAccount.save();
+
     res.status(201).json({
       user: savedUser,
+      account: addInitialBalanceToAccount,
       message: "User signup succesfully",
     });
   } catch (error) {
