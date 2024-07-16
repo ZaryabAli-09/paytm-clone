@@ -30,6 +30,26 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
+const AccountSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "User ID is required"],
+    },
+    balance: {
+      type: Number,
+      required: [true, "Balance is required"],
+      min: [0, "Balance cannot be negative"],
+    },
+  },
+  {
+    timestamps: true, // Adds createdAt and updatedAt fields
+    strict: true, // Ensures only defined fields in the schema are saved
+    versionKey: false, // Hides the __v (version) field
+  }
+);
 const User = mongoose.model("User", UserSchema);
+const Account = mongoose.model("Account", AccountSchema);
 
-export { User };
+export { User, Account };

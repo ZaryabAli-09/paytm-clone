@@ -6,7 +6,7 @@ import { verifyUser } from "../middlewares/verifyUser.js";
 
 const router = express.Router();
 
-router.post("/user/signup", async (req, res) => {
+router.post("/signup", async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
@@ -38,7 +38,7 @@ router.post("/user/signup", async (req, res) => {
   }
 });
 
-router.post("/user/signin", async (req, res) => {
+router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -82,7 +82,7 @@ router.post("/user/signin", async (req, res) => {
   }
 });
 
-router.put("/user/update", verifyUser, async (req, res) => {
+router.put("/update", verifyUser, async (req, res) => {
   const { username, email, password } = req.body;
   const user = req.user;
 
@@ -124,7 +124,7 @@ router.put("/user/update", verifyUser, async (req, res) => {
   }
 });
 
-router.get("/user/bulk", verifyUser, async (req, res, next) => {
+router.get("/bulk", verifyUser, async (req, res, next) => {
   const { name } = req.query;
 
   try {
