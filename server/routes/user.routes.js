@@ -1,6 +1,6 @@
 import express from "express";
 import bcryptjs from "bcryptjs";
-import { User } from "../models/paytm.models.js";
+import { User, Account } from "../models/paytm.models.js";
 import jwt from "jsonwebtoken";
 import { verifyUser } from "../middlewares/verifyUser.js";
 
