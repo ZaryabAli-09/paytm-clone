@@ -10,6 +10,11 @@ router.post("/user/signup", async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
     const hashedPassword = bcryptjs.hashSync(password, 10);
 
     const savedUser = new User({
@@ -27,8 +32,8 @@ router.post("/user/signup", async (req, res) => {
       message: "User signup succesfully",
     });
   } catch (error) {
-    res.status(error.statusCode || 501).json({
-      message: "Internal server error" || error.message,
+    res.status(error.statusCode || 500).json({
+      message: error.message || "Internal server error",
     });
   }
 });
@@ -37,11 +42,12 @@ router.post("/user/signin", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    if (!email || email === "" || !password || password === "") {
+    if (!email || !password) {
       return res.status(400).json({
         message: "All fields are required",
       });
     }
+
     const isUserExisted = await User.findOne({ email });
     if (!isUserExisted) {
       return res.status(400).json({
@@ -70,8 +76,8 @@ router.post("/user/signin", async (req, res) => {
       message: "User signup succesfully",
     });
   } catch (error) {
-    res.status(501).json({
-      message: "Internal server error" || error.message,
+    res.status(error.statusCode || 500).json({
+      message: error.message || "Internal server error",
     });
   }
 });
@@ -87,7 +93,6 @@ router.put("/user/update", verifyUser, async (req, res) => {
       });
     }
 
-    // Hash the password if it's provided
     const hashedPassword = await bcryptjs.hash(password, 10);
 
     const updateUser = await User.findByIdAndUpdate(
@@ -113,9 +118,36 @@ router.put("/user/update", verifyUser, async (req, res) => {
       user: updateUser,
     });
   } catch (error) {
-    res.status(501).json({
-      message: "Internal server error" || error.message,
+    res.status(error.statusCode || 500).json({
+      message: error.message || "Internal server error",
     });
   }
 });
+
+router.get("/user/bulk", verifyUser, async (req, res, next) => {
+  const { name } = req.query;
+
+  try {
+    let users;
+
+    if (name) {
+      users = await User.find({ username: new RegExp(name, "i") }); // Case-insensitive search
+    } else {
+      users = await User.find();
+    }
+
+    users = users.map((user) => {
+      user.password = undefined;
+      return user;
+    });
+
+    res.status(200).json({
+      message: "Users retrieved successfully",
+      users,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
