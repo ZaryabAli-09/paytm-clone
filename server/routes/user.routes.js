@@ -8,7 +8,6 @@ const router = express.Router();
 
 router.post("/signup", async (req, res) => {
   const { username, email, password } = req.body;
-
   try {
     if (!username || !email || !password) {
       return res.status(400).json({
@@ -79,8 +78,11 @@ router.post("/signin", async (req, res) => {
 
     isUserExisted.password = undefined;
 
+    const userAccount = await Account.findOne({ userId: isUserExisted._id });
+
     res.status(201).cookie("token", token, { httpOnly: true }).json({
       user: isUserExisted,
+      account: userAccount,
       token,
       message: "User signup succesfully",
     });
