@@ -5,9 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userSignIn } from "../store/store";
 export function SignIn() {
-  console.log("sign up rendered");
   const user = useSelector((state) => state.user);
-  console.log(user);
+
   const emailRef = useRef("");
   const passwordRef = useRef("");
 
@@ -40,7 +39,6 @@ export function SignIn() {
       const data = await res.json();
 
       if (res.ok) {
-        console.log(data);
         setLoading(false);
         setMessageBanner(data.message);
         dispatch(userSignIn(data));

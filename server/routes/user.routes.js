@@ -136,16 +136,18 @@ router.put("/update", verifyUser, async (req, res) => {
 });
 
 router.get("/bulk", verifyUser, async (req, res, next) => {
-  const { name } = req.query;
+  const filter = req.query.filter || "";
 
   try {
-    let users;
-
-    if (name) {
-      users = await User.find({ username: new RegExp(name, "i") }); // Case-insensitive search
-    } else {
-      users = await User.find();
-    }
+    let users = await User.find({
+      $or: [
+        {
+          username: {
+            $regex: filter,
+          },
+        },
+      ],
+    });
 
     users = users.map((user) => {
       user.password = undefined;
@@ -157,7 +159,9 @@ router.get("/bulk", verifyUser, async (req, res, next) => {
       users,
     });
   } catch (error) {
-    next(error);
+    res.status(error.statusCode || 500).json({
+      message: error.message || "Internal server error",
+    });
   }
 });
 

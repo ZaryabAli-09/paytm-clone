@@ -4,7 +4,6 @@ import { InputBox } from "../components/InputBox";
 import { useNavigate } from "react-router-dom";
 
 export function SignUp() {
-  console.log("sign up redndered");
   const usernameRef = useRef("");
   const emailRef = useRef("");
   const passwordRef = useRef("");
